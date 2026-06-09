@@ -1,0 +1,10 @@
+{
+  "language": "Deutsch",
+  "entries": [
+    { "key": "ui.new_game", "value": "Neues Spiel" },
+    { "key": "ui.continue", "value": "Fortsetzen" },
+    { "key": "ui.settings", "value": "Einstellungen" },
+    { "key": "ui.quit", "value": "Beenden" },
+    { "key": "error.character_controller_missing", "value": "Dem Spieler fehlt eine CharacterController-Komponente." }
+  ]
+}

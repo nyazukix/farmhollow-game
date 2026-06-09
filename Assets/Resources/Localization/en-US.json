@@ -1,0 +1,10 @@
+{
+  "language": "English",
+  "entries": [
+    { "key": "ui.new_game", "value": "New Game" },
+    { "key": "ui.continue", "value": "Continue" },
+    { "key": "ui.settings", "value": "Settings" },
+    { "key": "ui.quit", "value": "Quit" },
+    { "key": "error.character_controller_missing", "value": "The player is missing a CharacterController component." }
+  ]
+}
