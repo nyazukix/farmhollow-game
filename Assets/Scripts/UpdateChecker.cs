@@ -48,38 +48,25 @@ namespace Farmhollow
         {
             if (string.IsNullOrEmpty(m.url)) { Set("Keine Download-URL."); yield break; }
             string url = AbsoluteUrl(m.url);
-            string zip = Path.Combine(Application.temporaryCachePath, "farmhollow_update.zip");
+            string installer = Path.Combine(Application.temporaryCachePath, "FarmhollowSetup.exe");
             using (var req = UnityWebRequest.Get(url))
             {
-                req.downloadHandler = new DownloadHandlerFile(zip);
+                req.downloadHandler = new DownloadHandlerFile(installer);
                 yield return req.SendWebRequest();
                 if (req.result != UnityWebRequest.Result.Success) { Set("Download fehlgeschlagen: " + req.error); yield break; }
             }
-            Set("Update geladen. Installiere & starte neu...");
-            ApplyAndRestart(zip);
+            Set("Update geladen. Installer wird gestartet...");
+            ApplyAndRestart(installer);
         }
 
-        void ApplyAndRestart(string zipPath)
+        void ApplyAndRestart(string installerPath)
         {
-            // Ordner, der die .exe enthält (Application.dataPath = .../<Spiel>_Data)
-            string installDir = Path.GetDirectoryName(Application.dataPath);
-            string exePath = Path.Combine(installDir, Application.productName + ".exe");
-            string bat = Path.Combine(Application.temporaryCachePath, "farmhollow_apply_update.bat");
-
-            string script =
-                "@echo off\r\n" +
-                "timeout /t 2 /nobreak >nul\r\n" +
-                "powershell -NoProfile -Command \"Expand-Archive -Force '" + zipPath + "' '" + installDir + "'\"\r\n" +
-                "start \"\" \"" + exePath + "\"\r\n" +
-                "del \"%~f0\"\r\n";
-            File.WriteAllText(bat, script);
-
+            // Installer ausfuehren (aktualisiert die Installation am gewaehlten Pfad,
+            // startet das Spiel danach neu), dann das laufende Spiel beenden.
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = bat,
-                UseShellExecute = true,
-                CreateNoWindow = true,
-                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                FileName = installerPath,
+                UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
             Application.Quit();
