@@ -16,7 +16,8 @@ namespace Farmhollow
 
         [Header("Connect")]
         public GameObject connectPanel;
-        public InputField ipInput;          // Server-IP (Standard 127.0.0.1)
+        public InputField ipInput;          // Server-Adresse (Hostname oder IP)
+        public string defaultServer = "app.farmhollow.de";
         public ushort port = 7777;
 
         void Start()
@@ -24,7 +25,7 @@ namespace Farmhollow
             if (loginPanel != null) loginPanel.SetActive(true);
             if (connectPanel != null) connectPanel.SetActive(false);
             if (emailInput != null) emailInput.text = Auth.FixedEmail;
-            if (ipInput != null) ipInput.text = "127.0.0.1";
+            if (ipInput != null) ipInput.text = defaultServer;
         }
 
         public void OnLoginClicked()
@@ -60,11 +61,25 @@ namespace Farmhollow
         void ApplyAddress()
         {
             var utp = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            if (utp != null)
+            if (utp == null) return;
+            string addr = (ipInput != null && !string.IsNullOrEmpty(ipInput.text)) ? ipInput.text : defaultServer;
+            utp.SetConnectionData(ResolveToIPv4(addr), port);
+        }
+
+        // UnityTransport braucht eine IP — Hostnamen (z. B. app.farmhollow.de) hier auflösen.
+        string ResolveToIPv4(string host)
+        {
+            System.Net.IPAddress parsed;
+            if (System.Net.IPAddress.TryParse(host, out parsed)) return host;  // ist schon eine IP
+            try
             {
-                string ip = (ipInput != null && !string.IsNullOrEmpty(ipInput.text)) ? ipInput.text : "127.0.0.1";
-                utp.SetConnectionData(ip, port);
+                var addrs = System.Net.Dns.GetHostAddresses(host);
+                foreach (var a in addrs)
+                    if (a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) return a.ToString();
+                if (addrs.Length > 0) return addrs[0].ToString();
             }
+            catch { }
+            return host;
         }
 
         void HideAll()
