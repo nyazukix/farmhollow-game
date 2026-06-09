@@ -25,17 +25,25 @@ namespace Farmhollow
             Set("Suche nach Updates... (aktuell " + Application.version + ")");
             using (var req = UnityWebRequest.Get(manifestUrl))
             {
-                // Unkomprimiert anfordern — Unity kann Cloudflares Brotli nicht entpacken
-                req.SetRequestHeader("Accept-Encoding", "identity");
+                // Kein manuelles Accept-Encoding setzen: das löst einen UnityWebRequest-Bug
+                // aus (leerer Body). Der Server schickt "no-transform", daher komprimiert
+                // Cloudflare ohnehin nicht — Unity bekommt sauberes JSON.
+                req.timeout = 15;
                 yield return req.SendWebRequest();
                 if (req.result != UnityWebRequest.Result.Success)
                 {
                     Set("Update-Check fehlgeschlagen: " + req.error);
                     yield break;
                 }
+                string text = req.downloadHandler != null ? req.downloadHandler.text : null;
                 Manifest m = null;
-                try { m = JsonUtility.FromJson<Manifest>(req.downloadHandler.text); } catch { }
-                if (m == null || string.IsNullOrEmpty(m.version)) { Set("Ungültige Versionsinfo (Code " + req.responseCode + ")."); yield break; }
+                try { m = JsonUtility.FromJson<Manifest>(text); } catch { }
+                if (m == null || string.IsNullOrEmpty(m.version))
+                {
+                    Debug.LogWarning("[Update] Roh-Antwort (Code " + req.responseCode + "): " + (text ?? "(null)"));
+                    Set("Ungültige Versionsinfo (Code " + req.responseCode + ").");
+                    yield break;
+                }
 
                 if (m.available && IsNewer(m.version, Application.version))
                 {
