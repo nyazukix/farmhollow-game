@@ -3252,6 +3252,7 @@ MonoBehaviour:
   root: {fileID: 1552973298}
   tipText: {fileID: 1716882135}
   statusText: {fileID: 1368528582}
+  menuBackground: {fileID: 494238875}
   tips:
   - Willkommen in Farm Hollow!
   - Mit WASD bewegst du dich.

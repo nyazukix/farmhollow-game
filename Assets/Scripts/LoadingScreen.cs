@@ -12,6 +12,7 @@ namespace Farmhollow
         public GameObject root;        // das Lade-Panel (Vollbild)
         public Text tipText;
         public Text statusText;
+        public GameObject menuBackground;  // Menü-Hintergrund (Vollbild) — im Spiel ausblenden
 
         public string[] tips = new string[]
         {
@@ -71,12 +72,19 @@ namespace Farmhollow
 
         void OnConnected(ulong clientId)
         {
-            if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId) Hide();
+            if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
+            {
+                Debug.Log("[Net] CONNECTED als Client " + clientId);
+                if (menuBackground != null) menuBackground.SetActive(false); // 3D-Welt freigeben
+                Hide();
+            }
         }
 
         void OnDisconnected(ulong clientId)
         {
-            if (statusText != null) statusText.text = "Verbindung getrennt.";
+            string reason = NetworkManager.Singleton != null ? NetworkManager.Singleton.DisconnectReason : "";
+            Debug.Log("[Net] DISCONNECTED clientId=" + clientId + " reason='" + reason + "'");
+            if (statusText != null) statusText.text = "Verbindung getrennt." + (string.IsNullOrEmpty(reason) ? "" : " (" + reason + ")");
             // kurz sichtbar lassen, dann ausblenden
             Invoke(nameof(Hide), 2.5f);
         }
