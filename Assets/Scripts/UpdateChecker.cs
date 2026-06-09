@@ -11,12 +11,12 @@ namespace Farmhollow
     // und das Spiel neu startet (eine laufende .exe kann sich nicht selbst ersetzen).
     public class UpdateChecker : MonoBehaviour
     {
-        // version.json:  { "version": "1.0.1", "url": "https://.../Farmhollow-1.0.1.zip" }
-        public string manifestUrl = "https://farmhollow.de/version.json";
+        // Website-Endpoint: { "available": true, "version": "1.0.1", "url": "/download", ... }
+        public string manifestUrl = "https://farmhollow.de/api/update";
         public Text statusText;
 
         [System.Serializable]
-        private class Manifest { public string version; public string url; }
+        private class Manifest { public bool available; public string version; public string url; }
 
         public void CheckForUpdates() { StartCoroutine(Check()); }
 
@@ -35,7 +35,7 @@ namespace Farmhollow
                 try { m = JsonUtility.FromJson<Manifest>(req.downloadHandler.text); } catch { }
                 if (m == null || string.IsNullOrEmpty(m.version)) { Set("Ungueltige Versionsinfo."); yield break; }
 
-                if (IsNewer(m.version, Application.version))
+                if (m.available && IsNewer(m.version, Application.version))
                 {
                     Set("Update verfuegbar: " + m.version + " - lade herunter...");
                     yield return Download(m);
@@ -47,8 +47,9 @@ namespace Farmhollow
         IEnumerator Download(Manifest m)
         {
             if (string.IsNullOrEmpty(m.url)) { Set("Keine Download-URL."); yield break; }
+            string url = AbsoluteUrl(m.url);
             string zip = Path.Combine(Application.temporaryCachePath, "farmhollow_update.zip");
-            using (var req = UnityWebRequest.Get(m.url))
+            using (var req = UnityWebRequest.Get(url))
             {
                 req.downloadHandler = new DownloadHandlerFile(zip);
                 yield return req.SendWebRequest();
@@ -84,8 +85,18 @@ namespace Farmhollow
             Application.Quit();
         }
 
+        // Relative URLs (z. B. "/download") gegen die manifestUrl absolut machen.
+        string AbsoluteUrl(string u)
+        {
+            if (string.IsNullOrEmpty(u) || u.StartsWith("http")) return u;
+            try { return new System.Uri(new System.Uri(manifestUrl), u).ToString(); }
+            catch { return u; }
+        }
+
         bool IsNewer(string remote, string local)
         {
+            remote = (remote ?? "").TrimStart('v', 'V').Trim();
+            local = (local ?? "").TrimStart('v', 'V').Trim();
             System.Version vr, vl;
             if (System.Version.TryParse(remote, out vr) && System.Version.TryParse(local, out vl))
                 return vr > vl;

@@ -17,6 +17,10 @@ namespace Farmhollow
 #endif
             if (!headless) return;
 
+            // CPU drosseln: headless-Server lief sonst ungedrosselt (200% CPU)
+            Application.targetFrameRate = 30;
+            QualitySettings.vSyncCount = 0;
+
             if (NetworkManager.Singleton == null)
             {
                 Debug.LogError("[Server] Kein NetworkManager gefunden.");

@@ -19,6 +19,7 @@ namespace Farmhollow
         public InputField ipInput;          // Server-Adresse (Hostname oder IP)
         public string defaultServer = "app.farmhollow.de";
         public ushort port = 7777;
+        public LoadingScreen loadingScreen;
 
         void Start()
         {
@@ -36,7 +37,11 @@ namespace Farmhollow
             {
                 if (loginStatus != null) loginStatus.text = "";
                 if (loginPanel != null) loginPanel.SetActive(false);
-                if (connectPanel != null) connectPanel.SetActive(true);
+                HideAll();
+                if (loadingScreen != null) loadingScreen.Show("Verbinde mit Server...");
+                // Direkt mit dem Server verbinden (kein IP/Host-Schritt mehr)
+                ApplyAddress();
+                NetworkManager.Singleton.StartClient();
             }
             else
             {
