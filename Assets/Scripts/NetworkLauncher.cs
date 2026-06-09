@@ -33,20 +33,26 @@ namespace Farmhollow
         {
             string email = emailInput != null ? emailInput.text : "";
             string pass = passwordInput != null ? passwordInput.text : "";
-            if (Auth.TryLogin(email, pass))
+            if (loginStatus != null) loginStatus.text = "Anmelden...";
+            // Login läuft jetzt asynchron gegen den Server (/api/login, users-Tabelle).
+            StartCoroutine(Auth.Login(email, pass, OnLoginResult));
+        }
+
+        // Callback, sobald der Server geantwortet hat.
+        void OnLoginResult(bool ok, string message)
+        {
+            if (!ok)
             {
-                if (loginStatus != null) loginStatus.text = "";
-                if (loginPanel != null) loginPanel.SetActive(false);
-                HideAll();
-                if (loadingScreen != null) loadingScreen.Show("Verbinde mit Server...");
-                // Direkt mit dem Server verbinden (kein IP/Host-Schritt mehr)
-                ApplyAddress();
-                NetworkManager.Singleton.StartClient();
+                if (loginStatus != null) loginStatus.text = message;
+                return;
             }
-            else
-            {
-                if (loginStatus != null) loginStatus.text = "Login fehlgeschlagen.";
-            }
+            if (loginStatus != null) loginStatus.text = "";
+            if (loginPanel != null) loginPanel.SetActive(false);
+            HideAll();
+            if (loadingScreen != null) loadingScreen.Show("Verbinde mit Server...");
+            // Direkt mit dem Server verbinden (kein IP/Host-Schritt mehr)
+            ApplyAddress();
+            NetworkManager.Singleton.StartClient();
         }
 
         public void OnHostClicked()

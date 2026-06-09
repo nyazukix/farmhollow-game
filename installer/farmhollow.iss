@@ -1,14 +1,14 @@
 ; Farmhollow - Windows-Installer (Inno Setup)
 [Setup]
 AppName=Farmhollow
-AppVersion=1.1.3
+AppVersion=1.1.4
 AppPublisher=Farmhollow
 DefaultDirName={autopf}\Farmhollow
 DefaultGroupName=Farmhollow
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\Farmhollow.exe
 OutputDir=C:\Users\tobia\farmhollow\Build
-OutputBaseFilename=FarmhollowSetup-1.1.3
+OutputBaseFilename=FarmhollowSetup-1.1.4
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
