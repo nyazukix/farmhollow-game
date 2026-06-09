@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 namespace Farmhollow
@@ -21,6 +22,10 @@ namespace Farmhollow
                 Debug.LogError("[Server] Kein NetworkManager gefunden.");
                 return;
             }
+            // Auf allen Interfaces lauschen, damit externe Spieler verbinden koennen
+            var utp = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            if (utp != null) utp.SetConnectionData("0.0.0.0", 7777, "0.0.0.0");
+
             NetworkManager.Singleton.StartServer();
             Debug.Log("[Server] Dedicated Server gestartet (Port 7777).");
         }
