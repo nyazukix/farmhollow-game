@@ -33,11 +33,11 @@ namespace Farmhollow
                 }
                 Manifest m = null;
                 try { m = JsonUtility.FromJson<Manifest>(req.downloadHandler.text); } catch { }
-                if (m == null || string.IsNullOrEmpty(m.version)) { Set("Ungueltige Versionsinfo."); yield break; }
+                if (m == null || string.IsNullOrEmpty(m.version)) { Set("Ungültige Versionsinfo (Code " + req.responseCode + ")."); yield break; }
 
                 if (m.available && IsNewer(m.version, Application.version))
                 {
-                    Set("Update verfuegbar: " + m.version + " - lade herunter...");
+                    Set("Update verfügbar: " + m.version + " – lade herunter...");
                     yield return Download(m);
                 }
                 else Set("Du hast die neueste Version (" + Application.version + ").");

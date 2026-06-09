@@ -1494,7 +1494,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Schliessen
+  m_Text: "Schlie\xDFen"
 --- !u!222 &884058026
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3259,6 +3259,7 @@ MonoBehaviour:
   - Im Farmhaus kannst du Erweiterungen kaufen.
   - Dein Fortschritt wird auf dem Server gespeichert.
   - Sei nett im Chat. :)
+  connectTimeout: 12
 --- !u!1 &1657659243
 GameObject:
   m_ObjectHideFlags: 0

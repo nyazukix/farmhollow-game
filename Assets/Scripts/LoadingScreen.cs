@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ namespace Farmhollow
 
         public string[] tips = new string[]
         {
-            "Willkommen in Farm Hollow!",
+            "Willkommen in Farmhollow!",
             "Mit WASD bewegst du dich.",
             "Triff andere Spieler in der Stadt.",
             "Im Farmhaus kannst du Erweiterungen kaufen.",
@@ -24,6 +25,8 @@ namespace Farmhollow
 
         private float tipTimer;
         private int tipIndex;
+        public float connectTimeout = 12f;
+        private Coroutine timeoutCo;
 
         void Start()
         {
@@ -49,9 +52,22 @@ namespace Farmhollow
             if (root != null) root.SetActive(true);
             if (statusText != null) statusText.text = status;
             tipTimer = 0f; NextTip();
+            if (timeoutCo != null) StopCoroutine(timeoutCo);
+            timeoutCo = StartCoroutine(TimeoutRoutine());
         }
 
-        void Hide() { if (root != null) root.SetActive(false); }
+        void Hide()
+        {
+            if (root != null) root.SetActive(false);
+            if (timeoutCo != null) { StopCoroutine(timeoutCo); timeoutCo = null; }
+        }
+
+        IEnumerator TimeoutRoutine()
+        {
+            yield return new WaitForSecondsRealtime(connectTimeout);
+            if (root != null && root.activeSelf && statusText != null)
+                statusText.text = "Server nicht erreichbar. Prüfe Internet/Firewall und starte neu.";
+        }
 
         void OnConnected(ulong clientId)
         {
