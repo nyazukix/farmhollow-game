@@ -566,7 +566,7 @@ MonoBehaviour:
     EnableTimeResync: 0
     TimeResyncInterval: 30
     EnsureNetworkVariableLengthSafety: 0
-    EnableSceneManagement: 1
+    EnableSceneManagement: 0
     ForceSamePrefabs: 1
     RecycleNetworkIds: 1
     NetworkIdRecycleDelay: 120
@@ -3746,6 +3746,7 @@ GameObject:
   - component: {fileID: 1913616710}
   - component: {fileID: 1913616712}
   - component: {fileID: 1913616711}
+  - component: {fileID: 1913616713}
   m_Layer: 0
   m_Name: Ver
   m_TagString: Untagged
@@ -3814,6 +3815,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1913616709}
   m_CullTransparentMesh: 1
+--- !u!114 &1913616713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913616709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef8f948a9d9eab84db9e0328341cc8f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Farmhollow.VersionLabel
+  prefix: 'Version '
 --- !u!1 &2035058143
 GameObject:
   m_ObjectHideFlags: 0
