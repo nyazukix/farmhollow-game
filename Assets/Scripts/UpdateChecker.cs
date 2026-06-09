@@ -25,6 +25,8 @@ namespace Farmhollow
             Set("Suche nach Updates... (aktuell " + Application.version + ")");
             using (var req = UnityWebRequest.Get(manifestUrl))
             {
+                // Unkomprimiert anfordern — Unity kann Cloudflares Brotli nicht entpacken
+                req.SetRequestHeader("Accept-Encoding", "identity");
                 yield return req.SendWebRequest();
                 if (req.result != UnityWebRequest.Result.Success)
                 {
