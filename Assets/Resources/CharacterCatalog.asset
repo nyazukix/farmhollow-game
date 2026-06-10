@@ -16,18 +16,24 @@ MonoBehaviour:
   - key: char_player_w-1
     displayName: Mila
     model: {fileID: 919132149155446097, guid: 6c62db5d100b30541970eb5520454566, type: 3}
+    legSpread: 0
   - key: char_player_m-1
     displayName: Ben
     model: {fileID: 919132149155446097, guid: d5497e04f01cf7f468dd296dabbbf029, type: 3}
+    legSpread: 0
   - key: char_player_m-2
     displayName: Max
     model: {fileID: 919132149155446097, guid: cf37431dae1e3f444bb1d81a46dc1ae4, type: 3}
+    legSpread: 8
   - key: char_player_m-3
     displayName: Theo
     model: {fileID: 919132149155446097, guid: 734388ac4473c254aa1506ade471cada, type: 3}
+    legSpread: 0
   - key: char_player_w-2
     displayName: Lina
     model: {fileID: 919132149155446097, guid: d7e7952d35d13b948b529ace7d856cf4, type: 3}
+    legSpread: 0
   - key: char_player_w-3
     displayName: Emma
     model: {fileID: 919132149155446097, guid: 42581faf631f5b841961241314ce1f28, type: 3}
+    legSpread: 0

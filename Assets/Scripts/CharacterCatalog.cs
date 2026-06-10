@@ -15,6 +15,7 @@ namespace Farmhollow
             public string key;            // item_key aus der DB, z.B. "char_player_w-1"
             public string displayName;    // Anzeigename, z.B. "Mila"
             public GameObject model;      // importiertes Modell-Prefab (GLB)
+            public float legSpread = 0f;  // Grad, um die Beine zur Laufzeit nach aussen zu drehen (enge Figuren)
         }
 
         public List<Entry> entries = new List<Entry>();

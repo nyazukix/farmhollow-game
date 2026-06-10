@@ -33,6 +33,8 @@ namespace Farmhollow
         private GameObject currentModel;
         private Animator anim;
         private Vector3 lastPos;
+        private Transform leftUpLeg, rightUpLeg, leftLowLeg, rightLowLeg;   // fuer Bein-Spreizung
+        private float legSpreadDeg;
 
         void Awake()
         {
@@ -91,12 +93,29 @@ namespace Farmhollow
                 anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("PlayerAnimator");
                 anim.applyRootMotion = false;
             }
+            // Bein-Spreizung fuer enge Figuren (Knochen cachen)
+            var entry = catalog.Get(key);
+            legSpreadDeg = entry != null ? entry.legSpread : 0f;
+            leftUpLeg = rightUpLeg = null;
+            if (anim != null && legSpreadDeg != 0f)
+            {
+                leftUpLeg = anim.GetBoneTransform(HumanBodyBones.LeftUpperLeg);
+                rightUpLeg = anim.GetBoneTransform(HumanBodyBones.RightUpperLeg);
+                leftLowLeg = anim.GetBoneTransform(HumanBodyBones.LeftLowerLeg);
+                rightLowLeg = anim.GetBoneTransform(HumanBodyBones.RightLowerLeg);
+            }
         }
 
         // Vom Survival-System bei Tod aufgerufen.
         public void PlayDie()
         {
             if (anim != null) anim.SetTrigger("Die");
+        }
+
+        // Charakter zur Laufzeit wechseln (Owner) — setzt charKey -> ApplyModel ueber alle Clients.
+        public void SetCharacter(string key)
+        {
+            if (IsOwner) charKey.Value = new FixedString32Bytes(key);
         }
 
         void UpdateLabel()
@@ -160,6 +179,18 @@ namespace Farmhollow
                 Quaternion targetRot = Quaternion.LookRotation(new Vector3(move.x, 0f, move.z));
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
             }
+        }
+
+        // Beine zur Laufzeit nach aussen drehen (enge Figuren) — laeuft NACH der Animation.
+        void LateUpdate()
+        {
+            if (legSpreadDeg == 0f) return;
+            Vector3 fwd = transform.forward;
+            if (leftUpLeg != null) leftUpLeg.Rotate(fwd, legSpreadDeg, Space.World);
+            if (rightUpLeg != null) rightUpLeg.Rotate(fwd, -legSpreadDeg, Space.World);
+            // Unterschenkel gegen -> Fuesse bleiben parallel + breit (keine V-Form)
+            if (leftLowLeg != null) leftLowLeg.Rotate(fwd, -legSpreadDeg, Space.World);
+            if (rightLowLeg != null) rightLowLeg.Rotate(fwd, legSpreadDeg, Space.World);
         }
     }
 }
