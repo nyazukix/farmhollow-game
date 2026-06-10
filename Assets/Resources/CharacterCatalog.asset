@@ -41,3 +41,7 @@ MonoBehaviour:
     displayName: Patrick
     model: {fileID: 919132149155446097, guid: cee60acb63615e840b3a424c017dbf18, type: 3}
     legSpread: 0
+  - key: char_player_m-6
+    displayName: Benjamin
+    model: {fileID: 919132149155446097, guid: d47e0c34eb69d2a4baf1933d577cc7dd, type: 3}
+    legSpread: 0
