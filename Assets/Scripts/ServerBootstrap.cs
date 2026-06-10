@@ -11,6 +11,10 @@ namespace Farmhollow
     {
         void Start()
         {
+            // Im Editor NIE automatisch den Server starten (sonst kann man im
+            // Play-Modus nicht als Host testen). Nur echte headless-Builds starten.
+            if (Application.isEditor) return;
+
             bool headless = Application.isBatchMode;
 #if UNITY_SERVER
             headless = true;

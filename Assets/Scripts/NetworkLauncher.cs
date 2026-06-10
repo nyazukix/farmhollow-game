@@ -21,6 +21,9 @@ namespace Farmhollow
         public ushort port = 7777;
         public LoadingScreen loadingScreen;
 
+        [Header("Character")]
+        public CharacterSelect characterSelect;   // Auswahl beim ersten Login
+
         void Start()
         {
             if (loginPanel != null) loginPanel.SetActive(true);
@@ -49,8 +52,19 @@ namespace Farmhollow
             if (loginStatus != null) loginStatus.text = "";
             if (loginPanel != null) loginPanel.SetActive(false);
             HideAll();
+            // Erster Login (noch kein Charakter gewaehlt) -> Auswahl zeigen, dann verbinden
+            if (string.IsNullOrEmpty(Auth.Character) && characterSelect != null)
+            {
+                characterSelect.Show(ConnectNow);
+                return;
+            }
+            ConnectNow();
+        }
+
+        // Verbindet mit dem Server (nach Login bzw. nach der Charakter-Auswahl).
+        void ConnectNow()
+        {
             if (loadingScreen != null) loadingScreen.Show("Verbinde mit Server...");
-            // Direkt mit dem Server verbinden (kein IP/Host-Schritt mehr)
             ApplyAddress();
             NetworkManager.Singleton.StartClient();
         }
