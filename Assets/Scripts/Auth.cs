@@ -23,6 +23,7 @@ namespace Farmhollow
         public static long Balance;                     // Bank-Guthaben
         public static long Cash;                         // Bargeld
         public static string Token = "";                 // Session-Token (für spätere Server-Calls)
+        public static string Character = "";             // gewählter Charakter-Key (leer = noch keiner -> Auswahl zeigen)
 
         // --- JSON-Modelle (JsonUtility braucht [Serializable] + öffentliche Felder) ---
         [Serializable] private class LoginBody { public string email; public string password; }
@@ -36,6 +37,7 @@ namespace Farmhollow
             public string role;
             public long balance;
             public long cash;
+            public string character;
         }
 
         [Serializable]
@@ -103,6 +105,7 @@ namespace Farmhollow
                     Role = string.IsNullOrEmpty(resp.user.role) ? "player" : resp.user.role;
                     Balance = resp.user.balance;
                     Cash = resp.user.cash;
+                    Character = resp.user.character ?? "";
                 }
                 onDone?.Invoke(true, "");
             }
